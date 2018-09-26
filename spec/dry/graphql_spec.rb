@@ -39,6 +39,12 @@ RSpec.describe Dry::GraphQL do
     expect(nullable?(graphql_fields['age'])).to eq(false)
   end
 
+  it 'has a readable classname' do
+    graphql_type = user_struct.graphql_type
+
+    expect(graphql_type.inspect).to eql('Dry::GraphQL::GeneratedTypes::User')
+  end
+
   it 'resolved to the type in meta[:graphql_type] if specified' do
     graphql_fields = user_struct.graphql_type.fields
     uuid_field = graphql_fields['uuid']
@@ -52,7 +58,7 @@ RSpec.describe Dry::GraphQL do
     expect(graphql_type.graphql_name).to eq('User')
   end
 
-  context 'with a nested schema', skip: !Dry::Struct::VERSION.start_with?('0.5') do
+  context 'with a nested schema', skip: dry_struct_5? do
     let(:nested_user_struct) do
       unless defined?(NestedUser)
         class NestedUser < Dry::Struct
@@ -87,17 +93,17 @@ RSpec.describe Dry::GraphQL do
       end
 
       expect(schema.to_definition).to eql <<-GQL.strip.gsub(/^[ \t]{8}/, '')
-        type NestedUser__Info {
-          age: Int!
-          name: String
-        }
-
         type Query {
           user: User!
         }
 
         type User {
-          info: NestedUser__Info!
+          info: User__Info!
+        }
+
+        type User__Info {
+          age: Int!
+          name: String
         }
       GQL
     end

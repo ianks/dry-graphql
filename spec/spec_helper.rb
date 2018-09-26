@@ -1,6 +1,12 @@
 require 'bundler/setup'
 require 'dry/graphql'
 
+module VersionHelpers
+  def dry_struct_5?
+    !Dry::Struct::VERSION.start_with?('0.5')
+  end
+end
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = '.rspec_status'
@@ -11,4 +17,6 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.extend VersionHelpers
 end

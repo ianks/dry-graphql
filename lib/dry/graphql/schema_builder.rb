@@ -13,6 +13,7 @@ module Dry
       attr_reader :field, :type, :options, :schema, :name, :parent
 
       class TypeMappingError < StandardError; end
+      class NameGenerationError < StandardError; end
 
       def initialize(name: nil, type: nil, schema: nil, parent: nil, options: {})
         @name = name
@@ -103,11 +104,27 @@ module Dry
       end
 
       def map_schema(type)
-        name = @name.to_s.gsub('::', '__')
-        graphql_schema = self.class.build_graphql_schema_class(name)
+        graphql_name = generate_name
+        graphql_schema = self.class.build_graphql_schema_class(graphql_name)
         graphql_schema.graphql_name
-        opts = { name: type.name, type: type.type, schema: graphql_schema }
+        type_to_map = type.respond_to?(:schema) ? type.schema : type.type
+        opts = { name: graphql_name, type: type_to_map, schema: graphql_schema }
         SchemaBuilder.new(opts).reduce
+      end
+
+      def generate_name
+        name_tree = []
+        cursor = self
+        loop do
+          break if cursor.nil?
+
+          sanitized_name = cursor.name.to_s.capitalize.gsub('::', '__')
+          name_tree.unshift(sanitized_name)
+          cursor = cursor.parent
+        end
+        name_tree.join('__')
+      rescue StandardError => e
+        raise NameGenerationError, "Could not generate_name for #{type}: #{e.message}"
       end
 
       def nullable?(type)
