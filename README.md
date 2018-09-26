@@ -42,6 +42,19 @@ puts schema.to_definition # =>
 end
 ```
 
+### Usage with rom-sql
+
+To add a `graphql_type` method to a `ROM::Relation`:
+
+
+```ruby
+require 'dry/graphql/rom'
+
+class Users < ROM::Relation[:sql]
+  extend Dry::GraphQL::ROM
+end
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
