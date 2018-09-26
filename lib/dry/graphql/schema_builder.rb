@@ -121,6 +121,8 @@ module Dry
 
       def map_hash(hash)
         hash.each do |field_name, field_type|
+          next if skip?(field_name)
+
           schema.field(
             field_name,
             with(name: field_name, type: field_type).reduce,
@@ -128,6 +130,12 @@ module Dry
           )
         end
         schema
+      end
+
+      def skip?(field_name)
+        return false unless options.key?(:only)
+
+        !options[:only].include? field_name.to_sym
       end
 
       def map_array(type)

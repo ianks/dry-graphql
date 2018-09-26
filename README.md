@@ -20,10 +20,15 @@ class User < Dry::Struct
 
   attribute :name, Types::Strict::String.optional
   attribute :age, Types::Coercible::Integer
+  attribute :middle_name, Types::Coercible::String
+end
+
+class UserType < User.graphql_type(only: [:name, :age])
+  # you can add other fields here if you want
 end
 
 class Query < GraphQL::Schema::Object
-  field :user, User.graphql_type, null: false
+  field :user, UserType, null: false
 end
 
 class Schema < GraphQL::Schema

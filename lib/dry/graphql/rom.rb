@@ -10,11 +10,11 @@ module Dry
     #   extend Dry::GraphQL::ROM
     # end
     module ROM
-      def self.graphql_type
+      def graphql_type(opts = {})
         return @graphql_type if @graphql_type
 
         base_schema = schema.any?(&:read?) ? schema.to_output_hash : NOOP_OUTPUT_SCHEMA
-        @graphql_type ||= Dry::GraphQL.from(base_schema, name: 'Store')
+        @graphql_type ||= Dry::GraphQL.from(base_schema, name: 'Store', **opts)
       end
     end
   end

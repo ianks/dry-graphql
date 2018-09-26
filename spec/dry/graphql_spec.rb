@@ -6,28 +6,36 @@ RSpec.describe Dry::GraphQL do
   end
 
   let(:user_struct) do
-    unless defined?(User)
-      class User < Dry::Struct
-        module Types
-          include Dry::Types.module
-        end
-
-        attribute :uuid, Types::Strict::String.meta(
-          graphql_type: ::GraphQL::Types::ID
-        )
-        attribute :name, Types::Strict::String.optional
-        attribute :age, Types::Coercible::Integer
-        attribute :created_at, Types::Date
+    Class.new(Dry::Struct) do
+      module Types
+        include Dry::Types.module
       end
-    end
 
-    User
+      def self.name
+        'User'
+      end
+
+      attribute :uuid, Types::Strict::String.meta(
+        graphql_type: ::GraphQL::Types::ID
+      )
+      attribute :name, Types::Strict::String.optional
+      attribute :age, Types::Coercible::Integer
+      attribute :created_at, Types::Date
+    end
   end
 
   it 'includes to correct field names' do
     graphql_field_names = user_struct.graphql_type.fields.keys
 
     expected = %w[name age createdAt uuid]
+
+    expect(graphql_field_names).to match_array(expected)
+  end
+
+  it 'allows for whitelisting fields' do
+    graphql_field_names = user_struct.graphql_type(only: [:name]).fields.keys
+
+    expected = %w[name]
 
     expect(graphql_field_names).to match_array(expected)
   end
@@ -60,27 +68,23 @@ RSpec.describe Dry::GraphQL do
 
   context 'with a nested schema', skip: dry_struct_5? do
     let(:nested_user_struct) do
-      unless defined?(NestedUser)
-        class NestedUser < Dry::Struct
-          module Types
-            include Dry::Types.module
-          end
+      Class.new(Dry::Struct) do
+        module Types
+          include Dry::Types.module
+        end
 
-          def self.name
-            'User'
-          end
+        def self.name
+          'User'
+        end
 
-          attribute :tags, Types::Strict::Array.of(Types::Strict::String)
-          attribute :meta, Types::Hash
+        attribute :tags, Types::Strict::Array.of(Types::Strict::String)
+        attribute :meta, Types::Hash
 
-          attribute :info do
-            attribute :name, Types::Strict::String.optional
-            attribute :age, Types::Coercible::Integer
-          end
+        attribute :info do
+          attribute :name, Types::Strict::String.optional
+          attribute :age, Types::Coercible::Integer
         end
       end
-
-      NestedUser
     end
 
     it 'generates a correct schema' do
