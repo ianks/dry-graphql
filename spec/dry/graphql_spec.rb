@@ -52,7 +52,7 @@ RSpec.describe Dry::GraphQL do
     expect(graphql_type.graphql_name).to eq('User')
   end
 
-  context 'with a nested schema' do
+  context 'with a nested schema', skip: !Dry::Struct::VERSION.start_with?('0.5') do
     let(:nested_user_struct) do
       unless defined?(NestedUser)
         class NestedUser < Dry::Struct
