@@ -40,6 +40,14 @@ RSpec.describe Dry::GraphQL do
     expect(graphql_field_names).to match_array(expected)
   end
 
+  it 'allows for blacklisting fields' do
+    graphql_field_names = user_struct.graphql_type(skip: [:name]).fields.keys
+
+    expected = %w[age createdAt uuid]
+
+    expect(graphql_field_names).to match_array(expected)
+  end
+
   it 'correctly determines nullability' do
     graphql_fields = user_struct.graphql_type.fields
 

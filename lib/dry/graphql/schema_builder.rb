@@ -133,9 +133,17 @@ module Dry
       end
 
       def skip?(field_name)
-        return false unless options.key?(:only)
+        return false unless options.key?(:only) || options.key?(:skip)
 
-        !options[:only].include? field_name.to_sym
+        if options.key?(:only) && options.key?(:skip)
+          return InvalidOptionsError, 'Can only use :skip or :only, not both'
+        end
+
+        return options.fetch(:skip, []).include?(field_name.to_sym) if options.key?(:skip)
+
+        return !options.fetch(:only, []).include?(field_name.to_sym) if options.key?(:only)
+
+        false
       end
 
       def map_array(type)
@@ -153,7 +161,7 @@ module Dry
                       else
                         type.type
                       end
-        opts = { name: graphql_name, type: type_to_map, schema: graphql_schema }
+        opts = { name: graphql_name, type: type_to_map, schema: graphql_schema, options: options }
         SchemaBuilder.new(opts).reduce
       end
 
