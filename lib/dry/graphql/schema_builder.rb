@@ -41,17 +41,26 @@ module Dry
         when mappable?
           TypeMappings.map_type type
         when primitive?
-          reduce_with type: type.primitive
-        when input?
-          map_input type
-        when Dry::Types::Hash::Schema
+          TypeMappings.map_type(type.primitive)
+        when hash_schema?
+          map_hash type.options[:member_types]
+        when ::Hash
           map_hash type
-        when Dry::Types::Constrained, Dry::Types::Constructor
+        when schema?
+          map_schema type
+        when ::Dry::Types::Hash
+          schema
+        when ::Dry::Types::Constrained, Dry::Types::Constructor
           reduce_with type: type.type
-        when Dry::Types::Sum::Constrained
+        when ::Dry::Types::Definition
+          reduce_with type: type.primitive
+        when ::Dry::Types::Sum::Constrained
           reduce_with type: type.right
         else
-          raise TypeMappingError, "Cannot map #{type} to GraphQL type"
+          raise TypeMappingError,
+                "Cannot map #{type}. Please make sure " \
+                "it is registered by calling:\n" \
+                "Dry::GraphQL.register_type_mapping #{type}, MyGraphQLType"
         end
       end
 
@@ -65,16 +74,20 @@ module Dry
         TypeMappings.method(:mappable?)
       end
 
-      def input?
-        ->(type) { type.respond_to?(:input) }
+      def schema?
+        ->(type) { type.respond_to?(:schema) }
+      end
+
+      def hash_schema?
+        ->(type) { type.respond_to?(:options) && type.options.key?(:member_types) }
       end
 
       def specified_in_meta?
         ->(type) { type.respond_to?(:meta) && type.meta.key?(:graphql_type) }
       end
 
-      def map_hash(type)
-        type.options[:member_types].each do |field_name, field_type|
+      def map_hash(hash)
+        hash.each do |field_name, field_type|
           schema.field(
             field_name,
             with(name: field_name, type: field_type).reduce,
@@ -84,10 +97,10 @@ module Dry
         schema
       end
 
-      def map_input(type)
+      def map_schema(type)
         graphql_schema = Class.new(::GraphQL::Schema::Object)
         graphql_schema.graphql_name(type.name.to_s.gsub('::', '__'))
-        opts = { name: type.name, type: type.input, schema: graphql_schema }
+        opts = { name: type.name, type: type.type, schema: graphql_schema }
         SchemaBuilder.new(opts).reduce
       end
 

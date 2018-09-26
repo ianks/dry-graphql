@@ -16,7 +16,8 @@ module Dry
         ::TrueClass => ::GraphQL::Types::Boolean,
         ::FalseClass => ::GraphQL::Types::Boolean,
         ::Float => ::GraphQL::Types::Float,
-        ::Date => ::GraphQL::Types::ISO8601DateTime
+        ::Date => ::GraphQL::Types::ISO8601DateTime,
+        ::Time => ::GraphQL::Types::ISO8601DateTime
       )
 
       class << self

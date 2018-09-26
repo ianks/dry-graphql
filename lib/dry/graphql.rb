@@ -8,12 +8,21 @@ module Dry
     # Extends Dry::Struct functionality
     module Struct
       def graphql_type
-        SchemaBuilder.new(name: name, type: self).graphql_type
+        return @graphql_type if @graphql_type
+
+        graphql_schema = Class.new(::GraphQL::Schema::Object)
+        graphql_schema.graphql_name(name.to_s.gsub('::', '__'))
+        opts = { name: name, type: schema, schema: graphql_schema }
+        @graphql_type ||= SchemaBuilder.new(opts).graphql_type
       end
     end
 
     class << self
-      def register_type(input_type, output_type)
+      def from(type, name:)
+        SchemaBuilder.new(name: name, type: type).graphql_type
+      end
+
+      def register_type_mapping(input_type, output_type)
         TypeMappings.registry.merge!(input_type => output_type)
       end
     end
