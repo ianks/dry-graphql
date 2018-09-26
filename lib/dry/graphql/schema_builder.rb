@@ -1,6 +1,7 @@
 require 'graphql'
 require 'dry/graphql/types'
 require 'dry/graphql/type_mappings'
+require 'dry/graphql/base_object'
 require 'dry/core/class_builder'
 
 module Dry
@@ -40,10 +41,9 @@ module Dry
       end
 
       def self.build_graphql_schema_class(name)
-        Class.new(::GraphQL::Schema::Object)
         Dry::Core::ClassBuilder.new(
           name: name,
-          parent: ::GraphQL::Schema::Object,
+          parent: ::Dry::GraphQL::BaseObject,
           namespace: Dry::GraphQL::GeneratedTypes
         ).call
       end
