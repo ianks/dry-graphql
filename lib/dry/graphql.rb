@@ -10,9 +10,10 @@ module Dry
       def graphql_type
         return @graphql_type if @graphql_type
 
-        graphql_schema = Class.new(::GraphQL::Schema::Object)
-        graphql_schema.graphql_name(name.to_s.gsub('::', '__'))
-        opts = { name: name, type: schema, schema: graphql_schema }
+        graphql_name = name.to_s.gsub('::', '__')
+        graphql_schema = SchemaBuilder.build_graphql_schema_class(name)
+        graphql_schema.graphql_name(name)
+        opts = { name: graphql_name, type: schema, schema: graphql_schema }
         @graphql_type ||= SchemaBuilder.new(opts).graphql_type
       end
     end

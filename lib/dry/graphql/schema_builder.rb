@@ -1,8 +1,13 @@
 require 'graphql'
 require 'dry/graphql/type_mappings'
+require 'dry/core/class_builder'
 
 module Dry
   module GraphQL
+    # Module for generated types
+    module GeneratedTypes
+    end
+
     # Reduces a DRY type to a GraphQL type
     class SchemaBuilder
       attr_reader :field, :type, :options, :schema, :name, :parent
@@ -98,8 +103,9 @@ module Dry
       end
 
       def map_schema(type)
-        graphql_schema = Class.new(::GraphQL::Schema::Object)
-        graphql_schema.graphql_name(type.name.to_s.gsub('::', '__'))
+        name = @name.to_s.gsub('::', '__')
+        graphql_schema = self.class.build_graphql_schema_class(name)
+        graphql_schema.graphql_name
         opts = { name: type.name, type: type.type, schema: graphql_schema }
         SchemaBuilder.new(opts).reduce
       end
@@ -108,6 +114,14 @@ module Dry
         return false unless type.respond_to?(:left)
 
         type.left.type.primitive == NilClass
+      end
+
+      def self.build_graphql_schema_class(name)
+        Dry::Core::ClassBuilder.new(
+          name: name,
+          parent: ::GraphQL::Schema::Object,
+          namespace: Dry::GraphQL::GeneratedTypes
+        ).call
       end
     end
   end
