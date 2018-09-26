@@ -1,4 +1,5 @@
 # Dry::GraphQL
+[![Build Status](https://travis-ci.org/adHawk/dry-graphql.svg?branch=master)](https://travis-ci.org/adHawk/dry-graphql)
 
 `dry-graphql` makes [dry-types](https://dry-rb.org/gems/dry-types/) and
 [dry-struct](https://dry-rb.org/gems/dry-types/) play nicely with GraphQL. It
