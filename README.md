@@ -5,7 +5,8 @@
 [dry-struct](https://dry-rb.org/gems/dry-types/) play nicely with GraphQL. It
 adds a `graphql_type` method which will automatically generate a
 [graphql-ruby](http://graphql-ruby.org/). This takes the manual work out of
-maintaining schema types.
+maintaining multiple type definitions. Specify your `dry-type`, and re-use it
+for GraphQL.
 
 ## Usage
 

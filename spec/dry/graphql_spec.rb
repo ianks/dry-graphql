@@ -70,6 +70,9 @@ RSpec.describe Dry::GraphQL do
             'User'
           end
 
+          attribute :tags, Types::Strict::Array.of(Types::Strict::String)
+          attribute :meta, Types::Hash
+
           attribute :info do
             attribute :name, Types::Strict::String.optional
             attribute :age, Types::Coercible::Integer
@@ -93,12 +96,17 @@ RSpec.describe Dry::GraphQL do
       end
 
       expect(schema.to_definition).to eql <<-GQL.strip.gsub(/^[ \t]{8}/, '')
+        # A valid JSON document, transported as a string
+        scalar JSON
+
         type Query {
           user: User!
         }
 
         type User {
           info: User__Info!
+          meta: JSON!
+          tags: [String!]!
         }
 
         type User__Info {

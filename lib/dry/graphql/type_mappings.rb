@@ -9,8 +9,8 @@ module Dry
 
       extend Dry::Core::ClassAttributes
 
-      defines :registry
-      registry(
+      defines :scalar_mappings
+      scalar_mappings(
         ::String => ::GraphQL::Types::String,
         ::Integer => ::GraphQL::Types::Int,
         ::TrueClass => ::GraphQL::Types::Boolean,
@@ -20,9 +20,12 @@ module Dry
         ::Time => ::GraphQL::Types::ISO8601DateTime
       )
 
+      defines :registry
+      registry(scalar_mappings)
+
       class << self
-        def map_type(type)
-          registry.fetch(type) do
+        def map_type(type, mappings = registry)
+          mappings.fetch(type) do
             raise UnmappableTypeError,
                   "Cannot map #{type}. Please make sure " \
                   "it is registered by calling:\n" \
@@ -30,8 +33,12 @@ module Dry
           end
         end
 
-        def mappable?(type)
-          keys = registry.keys
+        def map_scalar(type)
+          map_type(type, scalar_mappings)
+        end
+
+        def scalar?(type)
+          keys = scalar_mappings.keys
           keys.include?(type)
         end
       end
