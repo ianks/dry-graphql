@@ -1,1 +1,8 @@
+---
 inherit_from: .rubocop_todo.yml
+
+AllCops:
+  UseCache: true
+  TargetRubyVersion: 2.5
+  Exclude:
+    - gemfiles/**/*

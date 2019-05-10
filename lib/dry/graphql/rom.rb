@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dry
   module GraphQL
     # Adds graphql_type to a rom relation

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 appraise 'dry-struct-4' do
   gem 'dry-struct', '~> 0.4.0'
 end

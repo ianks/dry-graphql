@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/graphql/version'
 require 'dry-struct'
 require 'dry/graphql/schema_builder'

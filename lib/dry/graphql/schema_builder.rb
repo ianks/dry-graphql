@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'graphql'
 require 'dry/graphql/types'
 require 'dry/graphql/type_mappings'
@@ -50,11 +52,12 @@ module Dry
 
       protected
 
+      # rubocop:disable Metrics/MethodLength
       def reduce
         case type
         when specified_in_meta?
           type.meta[:graphql_type]
-        when primary_key?
+        when pkey_or_fkey?
           ::GraphQL::Types::ID
         when scalar?
           TypeMappings.map_scalar type
@@ -83,6 +86,7 @@ module Dry
           raise_type_mapping_error(type)
         end
       end
+      # rubocop:enable Metrics/MethodLength
 
       def raise_type_mapping_error(type)
         raise TypeMappingError,
@@ -93,11 +97,9 @@ module Dry
 
       def primitive?
         lambda do |type|
-          begin
-            type.respond_to?(:primitive) && TypeMappings.scalar?(type.primitive)
-          rescue NoMethodError # when respond_to is incorrect (i.e. Dry::Types::Constructor)
-            false
-          end
+          type.respond_to?(:primitive) && TypeMappings.scalar?(type.primitive)
+        rescue NoMethodError # when respond_to is incorrect (i.e. Dry::Types::Constructor)
+          false
         end
       end
 
@@ -121,8 +123,8 @@ module Dry
         ->(type) { type.is_a?(Dry::Types::Hash) && !type.options.key(:member_types) }
       end
 
-      def primary_key?
-        ->(type) { type.respond_to?(:meta) && type.meta[:primary_key] }
+      def pkey_or_fkey?
+        ->(type) { type.respond_to?(:meta) && (type.meta[:primary_key] || type.meta[:foreign_key]) }
       end
 
       def map_hash(hash)

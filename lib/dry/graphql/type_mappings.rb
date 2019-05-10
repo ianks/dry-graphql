@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'graphql/types'
 require 'dry/core/class_attributes'
 
