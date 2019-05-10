@@ -28,7 +28,7 @@ RSpec.describe Dry::GraphQL do
       )
       attribute :name, Types::Strict::String.optional
       attribute :age, Types::Coercible::Integer
-      attribute :created_at, Types::Date
+      attribute :created_at, Types::DateTime
     end
   end
 
@@ -103,7 +103,14 @@ RSpec.describe Dry::GraphQL do
     expect(graphql_type.graphql_name).to eq('User')
   end
 
-  context 'with a nested schema', skip: dry_struct_5? do
+  it 'detects datetimes' do
+    graphql_fields = user_struct.graphql_type.fields
+    field = graphql_fields['createdAt']
+
+    expect(field.type.of_type).to eql(::GraphQL::Types::ISO8601DateTime)
+  end
+
+  context 'with a nested schema' do
     let(:nested_user_struct) do
       Class.new(Dry::Struct) do
         module Types
@@ -137,7 +144,9 @@ RSpec.describe Dry::GraphQL do
       end
 
       expect(schema.to_definition).to eql <<-GQL.strip.gsub(/^[ \t]{8}/, '')
-        # A valid JSON document, transported as a string
+        """
+        A valid JSON document, transported as a string
+        """
         scalar JSON
 
         type Query {
