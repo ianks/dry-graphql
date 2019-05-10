@@ -54,6 +54,8 @@ module Dry
         case type
         when specified_in_meta?
           type.meta[:graphql_type]
+        when primary_key?
+          ::GraphQL::Types::ID
         when scalar?
           TypeMappings.map_scalar type
         when primitive?
@@ -117,6 +119,10 @@ module Dry
 
       def raw_hash_type?
         ->(type) { type.is_a?(Dry::Types::Hash) && !type.options.key(:member_types) }
+      end
+
+      def primary_key?
+        ->(type) { type.respond_to?(:meta) && type.meta[:primary_key] }
       end
 
       def map_hash(hash)

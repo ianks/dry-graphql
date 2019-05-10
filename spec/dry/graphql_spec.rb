@@ -15,6 +15,9 @@ RSpec.describe Dry::GraphQL do
         'User'
       end
 
+      attribute :id, Types::Strict::Integer.meta(
+        primary_key: true
+      )
       attribute :uuid, Types::Strict::String.meta(
         graphql_type: ::GraphQL::Types::ID
       )
@@ -27,7 +30,7 @@ RSpec.describe Dry::GraphQL do
   it 'includes to correct field names' do
     graphql_field_names = user_struct.graphql_type.fields.keys
 
-    expected = %w[name age createdAt uuid]
+    expected = %w[name age createdAt uuid id]
 
     expect(graphql_field_names).to match_array(expected)
   end
@@ -41,7 +44,7 @@ RSpec.describe Dry::GraphQL do
   end
 
   it 'allows for blacklisting fields' do
-    graphql_field_names = user_struct.graphql_type(skip: [:name]).fields.keys
+    graphql_field_names = user_struct.graphql_type(skip: %i[name id]).fields.keys
 
     expected = %w[age createdAt uuid]
 
@@ -64,6 +67,13 @@ RSpec.describe Dry::GraphQL do
   it 'resolved to the type in meta[:graphql_type] if specified' do
     graphql_fields = user_struct.graphql_type.fields
     uuid_field = graphql_fields['uuid']
+
+    expect(uuid_field.type.of_type).to eql(GraphQL::Types::ID)
+  end
+
+  it 'detects primary keys' do
+    graphql_fields = user_struct.graphql_type.fields
+    uuid_field = graphql_fields['id']
 
     expect(uuid_field.type.of_type).to eql(GraphQL::Types::ID)
   end
