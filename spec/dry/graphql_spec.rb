@@ -22,7 +22,7 @@ RSpec.describe Dry::GraphQL do
       )
       attribute :account_id, Types::Strict::Integer.meta(
         foreign_key: true
-      )
+      ).optional
       attribute :uuid, Types::Strict::String.meta(
         graphql_type: ::GraphQL::Types::ID
       )
@@ -88,6 +88,13 @@ RSpec.describe Dry::GraphQL do
     uuid_field = graphql_fields['accountId']
 
     expect(uuid_field.type.of_type).to eql(GraphQL::Types::ID)
+  end
+
+  it 'recognizes nullability of foreign keys' do
+    graphql_fields = user_struct.graphql_type.fields
+    uuid_field = graphql_fields['accountId']
+
+    expect(nullable?(uuid_field)).to eq(true)
   end
 
   it 'sets the graphql_name' do

@@ -6,3 +6,7 @@ AllCops:
   TargetRubyVersion: 2.5
   Exclude:
     - gemfiles/**/*
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
