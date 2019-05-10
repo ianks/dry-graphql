@@ -15,7 +15,7 @@ module Dry
       def graphql_type(opts = {})
         return @graphql_type if @graphql_type
 
-        base_schema = schema.any?(&:read?) ? schema.to_output_hash : NOOP_OUTPUT_SCHEMA
+        base_schema = schema.to_output_hash
         type_name = Dry::Core::Inflector.singularize(name)
         @graphql_type ||= Dry::GraphQL.from(base_schema, name: type_name, **opts)
       end
