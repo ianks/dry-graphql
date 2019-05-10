@@ -87,7 +87,7 @@ RSpec.describe Dry::GraphQL do
     graphql_fields = user_struct.graphql_type.fields
     uuid_field = graphql_fields['accountId']
 
-    expect(uuid_field.type.of_type).to eql(GraphQL::Types::ID)
+    expect(uuid_field.type).to eql(GraphQL::Types::ID)
   end
 
   it 'recognizes nullability of foreign keys' do
