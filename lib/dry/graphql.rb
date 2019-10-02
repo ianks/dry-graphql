@@ -25,8 +25,8 @@ module Dry
     end
 
     class << self
-      def from(type, name:, **opts)
-        SchemaBuilder.new(name: name, type: type, options: opts).graphql_type
+      def from(type, name:, schema:, **opts)
+        SchemaBuilder.new(name: name, type: type, schema: schema, options: opts).graphql_type
       end
 
       def register_type_mapping(input_type, output_type)
