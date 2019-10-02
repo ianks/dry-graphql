@@ -1,4 +1,5 @@
 # Dry::GraphQL
+
 [![Build Status](https://travis-ci.org/adHawk/dry-graphql.svg?branch=master)](https://travis-ci.org/adHawk/dry-graphql)
 
 `dry-graphql` makes [dry-types](https://dry-rb.org/gems/dry-types/) and
@@ -15,7 +16,7 @@ Here is an example of using it with `dry-struct`:
 ```ruby
 class User < Dry::Struct
   module Types
-    include Dry::Types.module
+    include Dry.Types()
   end
 
   attribute :name, Types::Strict::String.optional
@@ -51,7 +52,6 @@ end
 
 To add a `graphql_type` method to a `ROM::Relation`:
 
-
 ```ruby
 require 'dry/graphql/rom'
 
@@ -75,7 +75,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install dry-graphql
-
 
 ## Development
 

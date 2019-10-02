@@ -8,6 +8,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 gem 'graphql'
 
 group :development, :test do
+  gem 'solargraph'
   gem 'pry'
   gem 'rubocop'
 end

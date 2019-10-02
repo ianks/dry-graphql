@@ -10,7 +10,7 @@ RSpec.describe Dry::GraphQL do
   let(:user_struct) do
     Class.new(Dry::Struct) do
       module Types
-        include Dry::Types.module
+        include Dry.Types(default: :nominal)
       end
 
       def self.name
@@ -114,7 +114,7 @@ RSpec.describe Dry::GraphQL do
     let(:nested_user_struct) do
       Class.new(Dry::Struct) do
         module Types
-          include Dry::Types.module
+          include Dry.Types(default: :nominal)
         end
 
         def self.name
