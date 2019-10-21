@@ -3,8 +3,7 @@ sudo: false
 language: ruby
 cache: bundler
 gemfile:
-  - gemfiles/dry_struct_4.gemfile
-  - gemfiles/dry_struct_5.gemfile
+  - gemfiles/dry_struct_1.0.gemfile
 script:
   - bundle exec rubocop
   - bundle exec rspec
