@@ -10,6 +10,7 @@ gem 'graphql'
 group :development, :test do
   gem 'pry'
   gem 'rubocop'
+  gem 'solargraph'
 end
 
 # Specify your gem's dependencies in dry-graphql.gemspec

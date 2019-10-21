@@ -15,14 +15,18 @@ module Dry
         graphql_name = name.to_s.gsub('::', '__')
         graphql_schema = SchemaBuilder.build_graphql_schema_class(name)
         graphql_schema.graphql_name(name)
-        opts = { name: graphql_name, type: schema, schema: graphql_schema, options: options }
+        schema_hash = schema.each_with_object({}) do |type, memo|
+          memo[type.name] = type.type
+        end
+
+        opts = { name: graphql_name, type: schema_hash, schema: graphql_schema, options: options }
         @graphql_type ||= SchemaBuilder.new(opts).graphql_type
       end
     end
 
     class << self
-      def from(type, name:, **opts)
-        SchemaBuilder.new(name: name, type: type, options: opts).graphql_type
+      def from(type, name:, schema:, **opts)
+        SchemaBuilder.new(name: name, type: type, schema: schema, options: opts).graphql_type
       end
 
       def register_type_mapping(input_type, output_type)

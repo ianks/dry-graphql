@@ -3,11 +3,11 @@ sudo: false
 language: ruby
 cache: bundler
 gemfile:
-  - gemfiles/dry_struct_4.gemfile
-  - gemfiles/dry_struct_5.gemfile
+  - gemfiles/dry_struct_1.0.gemfile
+  - gemfiles/dry_struct_1.1.gemfile
 script:
   - bundle exec rubocop
   - bundle exec rspec
 rvm:
-  - 2.5.1
+  - 2.5.7
 before_install: gem install bundler -v 1.16.5

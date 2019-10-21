@@ -64,7 +64,10 @@ module Dry
         when primitive?
           TypeMappings.map_type(type.primitive)
         when hash_schema?
-          map_hash type.options[:member_types]
+          schema_hash = type.options[:keys].each_with_object({}) do |type, hash|
+            hash[type.name] = type.type
+          end
+          map_hash schema_hash
         when raw_hash_type?
           # FIXME: this should be configurable
           ::Dry::GraphQL::Types::JSON
@@ -72,16 +75,16 @@ module Dry
           map_array type
         when ::Hash
           map_hash type
-        when schema?
-          map_schema type
         when ::Dry::Types::Hash
           schema
         when ::Dry::Types::Constrained, Dry::Types::Constructor
           reduce_with type: type.type
         when ::Dry::Types::Sum::Constrained, ::Dry::Types::Sum
           reduce_with type: type.right
-        when ::Dry::Types::Definition
+        when ::Dry::Types::Nominal
           reduce_with type: type.primitive
+        when schema?
+          map_schema type
         else
           raise_type_mapping_error(type)
         end
@@ -112,7 +115,7 @@ module Dry
       end
 
       def hash_schema?
-        ->(type) { type.respond_to?(:options) && type.options.key?(:member_types) }
+        ->(type) { type.respond_to?(:options) && type.options.key?(:keys) }
       end
 
       def specified_in_meta?
@@ -120,7 +123,7 @@ module Dry
       end
 
       def raw_hash_type?
-        ->(type) { type.is_a?(Dry::Types::Hash) && !type.options.key(:member_types) }
+        ->(type) { type.is_a?(Dry::Types::Hash) && !type.options.key(:keys) }
       end
 
       def pkey_or_fkey?
@@ -165,6 +168,8 @@ module Dry
         graphql_schema = self.class.build_graphql_schema_class(graphql_name)
         graphql_schema.graphql_name
         type_to_map = if type.respond_to?(:schema) && type.method(:schema).arity.zero?
+                        type.schema
+                      elsif type.respond_to?(:attributes)
                         type.schema
                       else
                         type.type
