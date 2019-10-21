@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'dry-struct', '~> 1.0'
-  spec.add_runtime_dependency 'dry-types', '~> 1.1.1'
+  spec.add_runtime_dependency 'dry-types', '>= 1.1.1', '< 1.3.0'
   spec.add_runtime_dependency 'graphql', '~> 1.9.0'
 
   spec.add_development_dependency 'appraisal'
