@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    dry-graphql (2.0.0)
+    dry-graphql (2.0.1)
       dry-struct (~> 1.0)
       dry-types (~> 1.1)
       graphql (~> 1.9.0)
