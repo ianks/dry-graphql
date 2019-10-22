@@ -5,6 +5,8 @@ cache: bundler
 gemfile:
   - gemfiles/dry_struct_1.0.gemfile
   - gemfiles/dry_struct_1.1.gemfile
+  - gemfiles/dry_types_1.1.gemfile
+  - gemfiles/dry_types_1.2.gemfile
 script:
   - bundle exec rubocop
   - bundle exec rspec

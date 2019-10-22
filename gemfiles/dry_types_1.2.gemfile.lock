@@ -32,12 +32,12 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.2)
       dry-equalizer (~> 0.2)
-    dry-struct (1.1.0)
+    dry-struct (1.1.1)
       dry-core (~> 0.4, >= 0.4.3)
       dry-equalizer (~> 0.2)
       dry-types (~> 1.0)
       ice_nine (~> 0.11)
-    dry-types (1.1.1)
+    dry-types (1.2.0)
       concurrent-ruby (~> 1.0)
       dry-container (~> 0.3)
       dry-core (~> 0.4, >= 0.4.4)
@@ -107,7 +107,7 @@ DEPENDENCIES
   appraisal
   bundler (~> 1.16)
   dry-graphql!
-  dry-struct (~> 1.1.0)
+  dry-types (~> 1.2.0)
   graphql
   pry
   rake (~> 10.0)
