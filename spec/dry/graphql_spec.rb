@@ -66,7 +66,7 @@ RSpec.describe Dry::GraphQL do
   it 'has a readable classname' do
     graphql_type = user_struct.graphql_type
 
-    expect(graphql_type.inspect).to eql('Dry::GraphQL::GeneratedTypes::User')
+    expect(graphql_type.inspect).to eql('DryGraphQLGeneratedTypeForUser')
   end
 
   it 'resolved to the type in meta[:graphql_type] if specified' do
