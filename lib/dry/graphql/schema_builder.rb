@@ -44,9 +44,8 @@ module Dry
 
       def self.build_graphql_schema_class(name)
         Dry::Core::ClassBuilder.new(
-          name: name,
-          parent: ::Dry::GraphQL::BaseObject,
-          namespace: Dry::GraphQL::GeneratedTypes
+          name: "DryGraphQLGeneratedTypeFor#{name}",
+          parent: ::Dry::GraphQL::BaseObject
         ).call
       end
 
@@ -166,7 +165,7 @@ module Dry
       def map_schema(type)
         graphql_name = generate_name
         graphql_schema = self.class.build_graphql_schema_class(graphql_name)
-        graphql_schema.graphql_name
+        graphql_schema.graphql_name(graphql_name)
         type_to_map = if type.respond_to?(:schema) && type.method(:schema).arity.zero?
                         type.schema
                       elsif type.respond_to?(:attributes)
@@ -184,7 +183,7 @@ module Dry
         loop do
           break if cursor.nil?
 
-          sanitized_name = cursor.name.to_s.capitalize.gsub('::', '__')
+          sanitized_name = Dry::GraphQL.generate_graphql_name(cursor.name)
           name_tree.unshift(sanitized_name)
           cursor = cursor.parent
         end
