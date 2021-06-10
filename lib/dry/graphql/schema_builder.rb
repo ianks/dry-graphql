@@ -17,6 +17,7 @@ module Dry
       attr_reader :field, :type, :options, :schema, :name, :parent
 
       class TypeMappingError < StandardError; end
+
       class NameGenerationError < StandardError; end
 
       def initialize(name: nil, type: nil, schema: nil, parent: nil, options: {})
@@ -183,7 +184,7 @@ module Dry
         loop do
           break if cursor.nil?
 
-          sanitized_name = Dry::GraphQL.generate_graphql_name(cursor.name)
+          sanitized_name = Dry::GraphQL.generate_graphql_name(cursor)
           name_tree.unshift(sanitized_name)
           cursor = cursor.parent
         end
