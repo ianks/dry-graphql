@@ -29,7 +29,7 @@ module Dry
       end
 
       def with(opts)
-        self.class.new({
+        self.class.new(**{
           name: @name, type: @type, schema: @schema, options: @options,
           parent: self
         }.merge(opts))

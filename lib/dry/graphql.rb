@@ -27,7 +27,7 @@ module Dry
         end
 
         opts = { name: graphql_name, type: schema_hash, schema: graphql_schema, options: options }
-        @graphql_type ||= SchemaBuilder.new(opts).graphql_type
+        @graphql_type ||= SchemaBuilder.new(**opts).graphql_type
       end
     end
 
